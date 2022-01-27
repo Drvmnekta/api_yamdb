@@ -58,8 +58,8 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == ROLES[2][0]
+        return self.role == ROLE_ADMIN
 
     @property
     def is_moderator(self):
-        return self.role == ROLES[1][0]
+        return self.role == ROLE_MODERATOR
