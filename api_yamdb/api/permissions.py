@@ -1,15 +1,27 @@
+"""Module with permissions."""
+
 from rest_framework import permissions
 
 MODERATOR_METHODS = ('PATCH', 'DELETE')
 
 
 class IsAdmin(permissions.BasePermission):
+    """Is admin permission.
+    
+    Returns true if user is admin, else forbidden.
+    """
+
     def has_permission(self, request, view):
         return (request.user.is_authenticated
                 and (request.user.is_admin))
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
+    """Is admin or read only permission.
+    
+    Returns true if user is admin, else read only.
+    """
+
     def has_permission(self, request, view):
         return ((request.method in permissions.SAFE_METHODS)
                 or (request.user.is_authenticated
@@ -24,6 +36,11 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 
 class IsAuthorOrModerator(permissions.BasePermission):
+    """Is author or moderator permission.
+    
+    Returns true if user is author or moderator, else forbidden.
+    """
+
     def has_permission(self, request, view):
         return ((request.method in permissions.SAFE_METHODS)
                 or (request.user.is_authenticated))
@@ -35,6 +52,12 @@ class IsAuthorOrModerator(permissions.BasePermission):
 
 
 class OwnResourcePermission(permissions.BasePermission):
+    """Own resource permission.
+    
+    Returns true if admin or moderator patches or deletes,
+    else forbidden.
+    """
+
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or request.user.is_authenticated)
@@ -49,6 +72,11 @@ class OwnResourcePermission(permissions.BasePermission):
 
 
 class IsAuthorOrAdminOrModerator(permissions.BasePermission):
+    """Is admin or author or moderator permission.
+    
+    Returns true if user is author, admin or moderator,
+    else forbidden.
+    """
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
@@ -67,7 +95,7 @@ class IsAuthorOrAdminOrModerator(permissions.BasePermission):
 
 
 class AdminOrReadOnly(permissions.BasePermission):
-
+# if not used - delete
     def has_permission(self, request, view):
         return (
             (request.method in permissions.SAFE_METHODS)

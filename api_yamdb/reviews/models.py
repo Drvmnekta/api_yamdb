@@ -1,3 +1,5 @@
+"""Module with models of reviews app."""
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
@@ -7,6 +9,8 @@ from users.models import User
 
 
 class Review(models.Model):
+    """Model of review."""
+
     text = models.TextField(verbose_name='текст')
     author = models.ForeignKey(
         User,
@@ -33,6 +37,8 @@ class Review(models.Model):
     )
 
     class Meta:
+        """Meta class for model of review."""
+
         constraints = [
             UniqueConstraint(
                 fields=['author', 'title'],
@@ -42,11 +48,14 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Get string representation of review object."""
         return self.text
 
 
 class Comments(models.Model):
+    """Models of comments."""
+    
     text = models.TextField('текст')
     author = models.ForeignKey(
         User,
@@ -66,8 +75,11 @@ class Comments(models.Model):
     )
 
     class Meta:
+        """Meta class for model of comments."""
+
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Get string representation of group object."""
         return self.text

@@ -1,3 +1,6 @@
+"""Module with models of users app."""
+
+from xmlrpc.client import Boolean
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
@@ -13,8 +16,10 @@ ROLES = [
 
 
 class CustomUserManager(UserManager):
+    """Custom user manager."""
 
-    def create_user(self, username, email, password, **extra_fields):
+    def create_user(self, username, email, password, **extra_fields) -> None:
+        """User creation."""
         if not email:
             raise ValueError('Email is required')
         if username == 'me':
@@ -23,12 +28,14 @@ class CustomUserManager(UserManager):
             username, email=email, password=password, **extra_fields)
 
     def create_superuser(
-            self, username, email, password, role, **extra_fields):
+            self, username, email, password, role, **extra_fields) -> None:
+        """Superuser creation."""
         return super().create_superuser(
             username, email, password, role='admin', **extra_fields)
 
 
 class User(AbstractUser):
+    """Model of user."""
 
     role = models.CharField(
         choices=ROLES,
@@ -52,16 +59,20 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ('email', 'password')
 
     class Meta:
+        """Meta class for model of user."""
+
         ordering = ('id',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
     @property
-    def is_admin(self):
+    def is_admin(self) -> Boolean:
+        """Get if user object role param is admin."""
         return self.role == ROLES[2][0]
 
     @property
-    def is_moderator(self):
+    def is_moderator(self) -> Boolean:
+        """Get if user object role param is moderator."""
         return self.role == ROLES[1][0]
 
 
