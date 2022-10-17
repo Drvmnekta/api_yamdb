@@ -1,5 +1,8 @@
+"""Module with views of users app."""
+
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.http import HttpRequest, HttpResponse
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status
@@ -17,13 +20,13 @@ from users.serializers import (AdminSerializer, StandartUserSerializer,
 
 
 class SignUpAPI(APIView):
-    """Запрос на регистрацию"""
+    """View of signing up."""
+
     permission_classes = (AllowAny,)
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Procidure post-request."""
         serializer = StandartUserSerializer(data=request.data)
-        # через try-except все валится из-за того, что я вызываю
-        # serializer.save() без проверки is_valid
         if not serializer.is_valid(raise_exception=True):
             raise ValidationError('invalid data')
         user, was_created = User.objects.get_or_create(
@@ -57,10 +60,12 @@ class SignUpAPI(APIView):
 
 
 class GetTokenAPI(APIView):
-    """Запрос на получение токена"""
+    """View for token receiving."""
+
     permission_classes = (AllowAny,)
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Procidure post-request."""
         serializer = TokenSerializer(data=request.data)
         if not serializer.is_valid(raise_exception=True):
             raise ValidationError('invalid data')
@@ -79,13 +84,16 @@ class GetTokenAPI(APIView):
 
 
 class UserDataAPI(APIView):
-    """Обычный пользователь работает со своими данными"""
-    def get(self, request):
+    """View for regular user to work with his own data."""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        """Procidure get-request."""
         user = get_object_or_404(User, username=request.user.username)
         serializer = StandartUserSerializer(user, many=False)
         return Response(serializer.data)
 
-    def patch(self, request):
+    def patch(self, request: HttpRequest) -> HttpResponse:
+        """Procidure post-request."""
         user = get_object_or_404(User, username=request.user.username)
         serializer = StandartUserSerializer(
             user, many=False, partial=True, data=request.data)
@@ -96,7 +104,8 @@ class UserDataAPI(APIView):
 
 
 class AdminDataAPI(ModelViewSet):
-    """Админ работает с данными пользователя"""
+    """View for admin to work with user data."""
+    
     queryset = User.objects.all()
     serializer_class = AdminSerializer
     lookup_field = 'username'
